@@ -64,6 +64,25 @@ function showSection(sectionId) {
     sectionToShow.classList.remove("d-none");
   }
 }
+// Liste des bijoux disponibles
+const items = [
+  "Bague en or",
+  "Collier diamant",
+  "Bracelet argent",
+  "Boucles d'oreilles perle",
+  "Chaîne en or",
+  "Pendentif cœur",
+  "Bracelet en perles",
+  "Bague sertie de saphir",
+  "Collier en argent",
+  "Boucles d'oreilles créoles",
+  "Montre élégante",
+  "Bijou de cheville",
+  "Broche fleur",
+  "Parure complète",
+  "Charms personnalisés"
+];
+
 
 // Fonction pour activer la recherche dynamique avec sélection
 function setupSearch() {
@@ -72,40 +91,48 @@ function setupSearch() {
   const searchInput = document.getElementById("searchInput");
   const searchResults = document.getElementById("searchResults");
 
-  let selectedIndex = -1; // Pour suivre l'élément sélectionné
+  let selectedIndex = -1; // Suivi de l'élément sélectionné
 
   // Toggle pour afficher/masquer la barre de recherche
   searchIcon.addEventListener("click", () => {
-    searchBar.classList.toggle("d-none"); // Afficher ou masquer la barre
+    searchBar.classList.toggle("d-none");
     if (!searchBar.classList.contains("d-none")) {
-      searchInput.focus(); // Activer automatiquement le focus
+      searchInput.focus();
     } else {
-      searchInput.value = ""; // Réinitialiser la recherche
-      searchResults.innerHTML = ""; // Vider les résultats
+      searchInput.value = "";
+      searchResults.innerHTML = "";
+    }
+  });
+
+  // Fermer la barre de recherche en cliquant à l'extérieur
+  document.addEventListener("click", (event) => {
+    if (!searchBar.contains(event.target) && !searchIcon.contains(event.target)) {
+      searchBar.classList.add("d-none");
+      searchResults.innerHTML = "";
     }
   });
 
   // Recherche en temps réel
   searchInput.addEventListener("input", (e) => {
     const query = e.target.value.toLowerCase();
-    searchResults.innerHTML = ""; // Réinitialiser les résultats
-    selectedIndex = -1; // Réinitialiser la sélection
+    searchResults.innerHTML = "";
+    selectedIndex = -1;
+
     if (query) {
-      const filteredItems = items.filter((item) =>
-        item.toLowerCase().includes(query)
-      );
+      const filteredItems = items.filter((item) => item.toLowerCase().includes(query));
+
       if (filteredItems.length > 0) {
         filteredItems.forEach((item, index) => {
           const li = document.createElement("li");
           li.textContent = item;
-          li.className = "list-group-item";
-          li.dataset.index = index; // Associer un index pour le suivi
+          li.className = "list-group-item list-group-item-action";
+          li.dataset.index = index;
           searchResults.appendChild(li);
 
           // Sélection par clic
           li.addEventListener("click", () => {
-            searchInput.value = item; // Insérer l'élément choisi
-            searchResults.innerHTML = ""; // Vider les résultats
+            searchInput.value = item;
+            searchResults.innerHTML = "";
           });
         });
       } else {
@@ -117,7 +144,7 @@ function setupSearch() {
     }
   });
 
-  // Gestion des touches fléchées et Entrée
+  // Navigation avec les touches fléchées et Enter
   searchInput.addEventListener("keydown", (e) => {
     const items = document.querySelectorAll(".list-group-item");
     if (items.length > 0) {
@@ -128,9 +155,9 @@ function setupSearch() {
         selectedIndex = (selectedIndex - 1 + items.length) % items.length;
         highlightItem(items);
       } else if (e.key === "Enter" && selectedIndex >= 0) {
-        e.preventDefault(); // Éviter de soumettre un formulaire
-        searchInput.value = items[selectedIndex].textContent; // Sélectionner l'élément
-        searchResults.innerHTML = ""; // Vider les résultats
+        e.preventDefault();
+        searchInput.value = items[selectedIndex].textContent;
+        searchResults.innerHTML = "";
       }
     }
   });
@@ -139,13 +166,15 @@ function setupSearch() {
   function highlightItem(items) {
     items.forEach((item, index) => {
       if (index === selectedIndex) {
-        item.classList.add("active"); // Ajouter une classe CSS pour le style
+        item.classList.add("list-group-item-action", "active");
       } else {
-        item.classList.remove("active");
+        item.classList.remove("list-group-item-action", "active");
       }
     });
   }
 }
+
+
 
 // Empêcher la fermeture du panneau avec le bouton hamburger
 document.addEventListener("DOMContentLoaded", () => {
